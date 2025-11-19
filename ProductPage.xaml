@@ -29,7 +29,7 @@
                                 <Binding Path="ProductImagePath">
                                     <Binding.TargetNullValue>
                                         <ImageSource>
-                                            res/picture.png
+                                            /Товар_import/picture.png
                                         </ImageSource>
                                     </Binding.TargetNullValue>
                                 </Binding>

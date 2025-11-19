@@ -15,6 +15,7 @@ namespace Kozin41
     
     public partial class Kozin41Entities : DbContext
     {
+
         private static Kozin41Entities _context;
 
         public static Kozin41Entities GetContext()

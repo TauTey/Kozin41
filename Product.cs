@@ -29,10 +29,9 @@ namespace Kozin41
         public string ProductImporter { get; set; }
         public string ProductCategory { get; set; }
         public byte ProductDiscountAmount { get; set; }
-        public int ProductQuantityInStock { get; set; }
+        public Nullable<int> ProductQuantityInStock { get; set; }
         public string ProductDescription { get; set; }
         public string ProductImage { get; set; }
-
         public string ProductImagePath
         {
             get
@@ -43,7 +42,6 @@ namespace Kozin41
                 return "Товар_import/" + ProductImage;
             }
         }
-
         public string ProductStatus { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

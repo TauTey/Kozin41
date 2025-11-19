@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Kozin41"
         mc:Ignorable="d"
-        Title="Kozin41" Height="450" Width="800" FontFamily="Comic Sans MS" Icon="res/icon.ico" WindowState="Maximized">
+        Title="Kozin41" Height="650" Width="1200" FontFamily="Comic Sans MS" Icon="res/icon.ico">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="75"/>

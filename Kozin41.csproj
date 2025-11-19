@@ -158,11 +158,22 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="res\icon.ico" />
-    <Resource Include="res\logo.png" />
-    <Resource Include="res\picture.png" />
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="KozinModel.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>KozinModel.edmx</DependentUpon>
+      <LastGenOutput>KozinModel.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="KozinModel.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>KozinModel.edmx</DependentUpon>
+      <LastGenOutput>KozinModel.cs</LastGenOutput>
+    </Content>
+    <Resource Include="Товар_import\picture.png" />
+    <Resource Include="res\icon.ico" />
+    <Resource Include="res\logo.png" />
     <Resource Include="Товар_import\B320R5.jpg" />
     <Resource Include="Товар_import\D329H3.jpg" />
     <Resource Include="Товар_import\D572U8.jpg" />
@@ -173,21 +184,6 @@
     <Resource Include="Товар_import\H782T5.jpg" />
     <Resource Include="Товар_import\J384T6.jpg" />
     <Resource Include="Товар_import\А112Т4.jpg" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="KozinModel.Context.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>KozinModel.Context.cs</LastGenOutput>
-      <DependentUpon>KozinModel.edmx</DependentUpon>
-    </Content>
-    <Content Include="KozinModel.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>KozinModel.edmx</DependentUpon>
-      <LastGenOutput>KozinModel.cs</LastGenOutput>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
