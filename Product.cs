@@ -29,7 +29,7 @@ namespace Kozin41
         public string ProductImporter { get; set; }
         public string ProductCategory { get; set; }
         public byte ProductDiscountAmount { get; set; }
-        public Nullable<int> ProductQuantityInStock { get; set; }
+        public int ProductQuantityInStock { get; set; }
         public string ProductDescription { get; set; }
         public string ProductImage { get; set; }
         public string ProductImagePath

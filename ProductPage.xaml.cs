@@ -20,9 +20,30 @@ namespace Kozin41
     /// </summary>
     public partial class ProductPage : Page
     {
-        public ProductPage()
+        public ProductPage(User user)
         {
             InitializeComponent();
+            if (user != null)
+            {
+                FIOTB.Text = "Вы авторизовались как: " + user.UserSurname + " " + user.UserName + " " + user.UserPatronymic;
+                switch (user.UserRole)
+                {
+                    case 1:
+                        RoleTB.Text = "Роль: Клиент";
+                        break;
+                    case 2:
+                        RoleTB.Text = "Роль: Менеджер";
+                        break;
+                    case 3:
+                        RoleTB.Text = "Роль: Администратор";
+                        break;
+                }
+            }
+            else
+            {
+                FIOTB.Text = "Вы авторизовались как: Гость";
+                RoleTB.Text = "";
+            }
             var currentProducts = Kozin41Entities.GetContext().Product.ToList();
             ProductListView.ItemsSource = currentProducts;
 

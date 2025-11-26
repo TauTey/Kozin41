@@ -64,6 +64,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AuthPage.xaml.cs">
+      <DependentUpon>AuthPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="KozinModel.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -88,6 +91,10 @@
       <DependentUpon>KozinModel.tt</DependentUpon>
     </Compile>
     <Page Include="AddEditPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="AuthPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -161,16 +168,6 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="KozinModel.Context.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>KozinModel.edmx</DependentUpon>
-      <LastGenOutput>KozinModel.Context.cs</LastGenOutput>
-    </Content>
-    <Content Include="KozinModel.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>KozinModel.edmx</DependentUpon>
-      <LastGenOutput>KozinModel.cs</LastGenOutput>
-    </Content>
     <Resource Include="Товар_import\picture.png" />
     <Resource Include="res\icon.ico" />
     <Resource Include="res\logo.png" />
@@ -184,6 +181,18 @@
     <Resource Include="Товар_import\H782T5.jpg" />
     <Resource Include="Товар_import\J384T6.jpg" />
     <Resource Include="Товар_import\А112Т4.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="KozinModel.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>KozinModel.edmx</DependentUpon>
+      <LastGenOutput>KozinModel.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="KozinModel.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>KozinModel.edmx</DependentUpon>
+      <LastGenOutput>KozinModel.cs</LastGenOutput>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
