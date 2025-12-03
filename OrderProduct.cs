@@ -20,5 +20,16 @@ namespace Kozin41
     
         public virtual Order Order { get; set; }
         public virtual Product Product { get; set; }
+
+        public decimal ItemTotal
+        {
+            get
+            {
+                if (Product == null) return 0;
+                decimal price = Product.ProductCost;
+                decimal discount = price * (Product.ProductDiscountAmount / 100m);
+                return (price - discount) * ProductQuantity;
+            }
+        }
     }
 }

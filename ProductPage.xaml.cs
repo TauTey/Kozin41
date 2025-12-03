@@ -49,6 +49,8 @@ namespace Kozin41
 
             ComboType.SelectedIndex = 0;
             TextItemCount.Text = $"{currentProducts.Count} из {Kozin41Entities.GetContext().Product.Count()}";
+
+            Manager.CurrentUser = user;
         }
 
         private void UpdateProducts()
@@ -102,6 +104,65 @@ namespace Kozin41
             UpdateProducts();
         }
 
-        
+        private void AddToOrder_Click(object sender, RoutedEventArgs e)
+        {
+            if (ProductListView.SelectedItem is Product selectedProduct)
+            {
+                try
+                {
+                    using (var context = Kozin41Entities.GetContext())
+                    {
+                        // Находим или создаем заказ
+                        var order = context.Order
+                            .FirstOrDefault(o => o.OrderStatus == "Новый" && o.OrderClientID == Manager.CurrentUser.UserID);
+
+                        if (order == null)
+                        {
+                            // Создаем новый заказ
+                            order = new Order
+                            {
+                                OrderDate = DateTime.Now.Date,
+                                OrderDeliveryDate = DateTime.Now.Date,
+                                OrderPickupPoint = 1,
+                                OrderClientID = Manager.CurrentUser?.UserID,
+                                OrderCode = (context.Order.Max(o => (int?)o.OrderCode) ?? 900) + 1,
+                                OrderStatus = "Новый"
+                            };
+                            context.Order.Add(order);
+                            context.SaveChanges();
+                        }
+
+                        // Добавляем товар
+                        var existingItem = context.OrderProduct
+                            .FirstOrDefault(op => op.OrderID == order.OrderID &&
+                                                 op.ProductArticleNumber == selectedProduct.ProductArticleNumber);
+
+                        if (existingItem != null)
+                        {
+                            existingItem.ProductQuantity += 1;
+                        }
+                        else
+                        {
+                            var newItem = new OrderProduct
+                            {
+                                OrderID = order.OrderID,
+                                ProductArticleNumber = selectedProduct.ProductArticleNumber,
+                                ProductQuantity = 1
+                            };
+                            context.OrderProduct.Add(newItem);
+                        }
+
+                        context.SaveChanges();
+                        MessageBox.Show("Товар добавлен к заказу!");
+
+                        // Можно показать кнопку просмотра заказа
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Ошибка: {ex.Message}");
+                }
+            }
+        }
     }
 }

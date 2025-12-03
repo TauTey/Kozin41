@@ -10,5 +10,6 @@ namespace Kozin41
     internal class Manager
     {
         public static Frame MainFrame { get; set; }
+        public static User CurrentUser { get; set; }
     }
 }
