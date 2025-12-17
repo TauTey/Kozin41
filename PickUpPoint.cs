@@ -25,7 +25,11 @@ namespace Kozin41
         public string PickUpPointCity { get; set; }
         public string PickUpPointStreet { get; set; }
         public string PickUpPointFlat { get; set; }
-    
+        public string PickUpFull
+        {
+            get { return PickUpPointIndex + " " + PickUpPointCity + " " + PickUpPointStreet + " " + PickUpPointFlat; }
+        }
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Order> Order { get; set; }
     }

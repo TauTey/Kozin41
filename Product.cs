@@ -30,6 +30,8 @@ namespace Kozin41
         public string ProductCategory { get; set; }
         public byte ProductDiscountAmount { get; set; }
         public int ProductQuantityInStock { get; set; }
+
+        public int ProductRealStock { get; set; }
         public string ProductDescription { get; set; }
         public string ProductImage { get; set; }
         public string ProductImagePath

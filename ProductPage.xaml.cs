@@ -20,149 +20,204 @@ namespace Kozin41
     /// </summary>
     public partial class ProductPage : Page
     {
+        int CountRecords;
+        int CountPage;
+        int CurrentPage = 0;
+        List<Product> CurrentPageList = new List<Product>();
+        List<Product> TableList;
+        List<OrderProduct> selectedOrderProducts = new List<OrderProduct>();
+        List<Product> selectedProducts = new List<Product>();
         public ProductPage(User user)
         {
+            var CurrentProduct = Kozin41Entities.GetContext().Product.ToList();
             InitializeComponent();
             if (user != null)
             {
-                FIOTB.Text = "Вы авторизовались как: " + user.UserSurname + " " + user.UserName + " " + user.UserPatronymic;
+                FIOTB.Text = user.UserSurname + " " + user.UserName + " " + user.UserPatronymic;
                 switch (user.UserRole)
                 {
                     case 1:
-                        RoleTB.Text = "Роль: Клиент";
-                        break;
+                        RoleTB.Text = "Клиент"; break;
                     case 2:
-                        RoleTB.Text = "Роль: Менеджер";
-                        break;
+                        RoleTB.Text = "Менеджер"; break;
                     case 3:
-                        RoleTB.Text = "Роль: Администратор";
-                        break;
+                        RoleTB.Text = "Администратор"; break;
                 }
             }
             else
             {
-                FIOTB.Text = "Вы авторизовались как: Гость";
-                RoleTB.Text = "";
+                FIOTB.Text = "Гость";
+                RoleTB.Text = "Гость";
             }
-            var currentProducts = Kozin41Entities.GetContext().Product.ToList();
-            ProductListView.ItemsSource = currentProducts;
 
+
+            ProductListView.ItemsSource = CurrentProduct;
             ComboType.SelectedIndex = 0;
-            TextItemCount.Text = $"{currentProducts.Count} из {Kozin41Entities.GetContext().Product.Count()}";
 
-            Manager.CurrentUser = user;
+            UpdateProduct();
         }
-
-        private void UpdateProducts()
+        private void UpdateProduct()
         {
-            var currentProducts = Kozin41Entities.GetContext().Product.ToList();
+            var CurrentProduct = Kozin41Entities.GetContext().Product.ToList();
+            CurrentPageList = Kozin41Entities.GetContext().Product.ToList();
             if (ComboType.SelectedIndex == 0)
-            {
-                currentProducts = currentProducts.Where(p => (Convert.ToInt32(p.ProductDiscountAmount) >= 0 && Convert.ToInt32(p.ProductDiscountAmount) <= 100)).ToList();
-            }
+                CurrentProduct = CurrentProduct.Where(p => (Convert.ToInt32(p.ProductDiscountAmount) >= 0 && Convert.ToInt32(p.ProductDiscountAmount) <= 100)).ToList();
             if (ComboType.SelectedIndex == 1)
-            {
-                currentProducts = currentProducts.Where(p => (Convert.ToInt32(p.ProductDiscountAmount) >= 0 && Convert.ToInt32(p.ProductDiscountAmount) < 9.99)).ToList();
-            }
+                CurrentProduct = CurrentProduct.Where(p => (Convert.ToInt32(p.ProductDiscountAmount) >= 0 && Convert.ToInt32(p.ProductDiscountAmount) < 10)).ToList();
             if (ComboType.SelectedIndex == 2)
-            {
-                currentProducts = currentProducts.Where(p => (Convert.ToInt32(p.ProductDiscountAmount) >= 10 && Convert.ToInt32(p.ProductDiscountAmount) <= 14.99)).ToList();
-            }
+                CurrentProduct = CurrentProduct.Where(p => (Convert.ToInt32(p.ProductDiscountAmount) >= 10 && Convert.ToInt32(p.ProductDiscountAmount) < 15)).ToList();
             if (ComboType.SelectedIndex == 3)
-            {
-                currentProducts = currentProducts.Where(p => (Convert.ToInt32(p.ProductDiscountAmount) >= 15 && Convert.ToInt32(p.ProductDiscountAmount) <= 100)).ToList();
-            }
-            currentProducts = currentProducts.Where(p => p.ProductName.ToLower().Contains(TBoxSearch.Text.ToLower())).ToList();
-
-            if (RButtonDown.IsChecked == true)
-            {
-                currentProducts = currentProducts.OrderByDescending(p => p.ProductCost).ToList();
-            }
-            if (RButtonUp.IsChecked == true)
-            {
-                currentProducts = currentProducts.OrderBy(p => p.ProductCost).ToList();
-            }
-            ProductListView.ItemsSource = currentProducts;
-            TextItemCount.Text = $"{currentProducts.Count} из {Kozin41Entities.GetContext().Product.Count()}";
+                CurrentProduct = CurrentProduct.Where(p => (Convert.ToInt32(p.ProductDiscountAmount) >= 15)).ToList();
+            CurrentProduct = CurrentProduct.Where(p => p.ProductName.ToLower().Contains(TBoxSearch.Text.ToLower())).ToList();
+            ProductListView.ItemsSource = CurrentProduct.ToList();
+            if (RButtonDown.IsChecked.Value)
+                CurrentProduct = CurrentProduct.OrderByDescending(p => p.ProductCost).ToList();
+            if (RButtonUp.IsChecked.Value)
+                CurrentProduct = CurrentProduct.OrderBy(p => p.ProductCost).ToList();
+            ProductListView.ItemsSource = CurrentProduct;
+            TableList = CurrentProduct;
+            ChangePage(0);
         }
+        private void ChangePage(int? selectedPage)
+        {
+
+
+            TBCount.Text = "0";
+            CountRecords = TableList.Count;
+            TBCount.Text = CountRecords.ToString();
+            TBAllRecords.Text = " из " + CurrentPageList.Count;
+            if (selectedProducts.Count <= 0)
+            {
+                OrdersBtn.Visibility = Visibility.Hidden;
+            }
+            else
+            {
+                OrdersBtn.Visibility = Visibility.Visible;
+            }
+        }
+
+
         private void TBoxSearch_TextChanged(object sender, TextChangedEventArgs e)
         {
-            UpdateProducts();
+            UpdateProduct();
         }
+
         private void ComboType_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            UpdateProducts();
+            UpdateProduct();
+        }
+
+        private void RadioButton_Checked(object sender, RoutedEventArgs e)
+        {
+            UpdateProduct();
         }
 
         private void RButtonUp_Checked(object sender, RoutedEventArgs e)
         {
-            UpdateProducts();
+            UpdateProduct();
         }
 
         private void RButtonDown_Checked(object sender, RoutedEventArgs e)
         {
-            UpdateProducts();
+            UpdateProduct();
+
         }
 
-        private void AddToOrder_Click(object sender, RoutedEventArgs e)
+
+
+
+        private void UpdateOrdersButtonVisibility()
         {
-            if (ProductListView.SelectedItem is Product selectedProduct)
+            // Добавьте отладку
+            Console.WriteLine($"UpdateOrdersButtonVisibility called. selectedProducts.Count = {selectedProducts.Count}");
+
+            // Кнопка OrdersBtn видима, если есть товары в корзине
+            if (OrdersBtn != null)
             {
-                try
-                {
-                    using (var context = Kozin41Entities.GetContext())
-                    {
-                        // Находим или создаем заказ
-                        var order = context.Order
-                            .FirstOrDefault(o => o.OrderStatus == "Новый" && o.OrderClientID == Manager.CurrentUser.UserID);
-
-                        if (order == null)
-                        {
-                            // Создаем новый заказ
-                            order = new Order
-                            {
-                                OrderDate = DateTime.Now.Date,
-                                OrderDeliveryDate = DateTime.Now.Date,
-                                OrderPickupPoint = 1,
-                                OrderClientID = Manager.CurrentUser?.UserID,
-                                OrderCode = (context.Order.Max(o => (int?)o.OrderCode) ?? 900) + 1,
-                                OrderStatus = "Новый"
-                            };
-                            context.Order.Add(order);
-                            context.SaveChanges();
-                        }
-
-                        // Добавляем товар
-                        var existingItem = context.OrderProduct
-                            .FirstOrDefault(op => op.OrderID == order.OrderID &&
-                                                 op.ProductArticleNumber == selectedProduct.ProductArticleNumber);
-
-                        if (existingItem != null)
-                        {
-                            existingItem.ProductQuantity += 1;
-                        }
-                        else
-                        {
-                            var newItem = new OrderProduct
-                            {
-                                OrderID = order.OrderID,
-                                ProductArticleNumber = selectedProduct.ProductArticleNumber,
-                                ProductQuantity = 1
-                            };
-                            context.OrderProduct.Add(newItem);
-                        }
-
-                        context.SaveChanges();
-                        MessageBox.Show("Товар добавлен к заказу!");
-
-                        // Можно показать кнопку просмотра заказа
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Ошибка: {ex.Message}");
-                }
+                OrdersBtn.Visibility = selectedProducts.Count > 0 ? Visibility.Visible : Visibility.Hidden;
+                Console.WriteLine($"OrdersBtn.Visibility set to: {OrdersBtn.Visibility}");
+            }
+            else
+            {
+                Console.WriteLine("ERROR: OrdersBtn is null!");
             }
         }
+
+        private void OrdersBtn_Click(object sender, RoutedEventArgs e)
+        {
+            Console.WriteLine("OrdersBtn clicked!");
+
+            if (selectedProducts.Count > 0)
+            {
+                Console.WriteLine($"selectedProducts.Count = {selectedProducts.Count}");
+
+                selectedProducts = selectedProducts.Distinct().ToList();
+                OrderWindow orderWindow = new OrderWindow(selectedOrderProducts, selectedProducts, FIOTB.Text);
+
+                // Скрываем кнопку при открытии корзины
+                OrdersBtn.Visibility = Visibility.Hidden;
+                Console.WriteLine("Button hidden before opening OrderWindow");
+
+                orderWindow.ShowDialog();
+                Console.WriteLine("OrderWindow closed");
+
+                // Очищаем корзину после закрытия окна
+                selectedProducts.Clear();
+                selectedOrderProducts.Clear();
+                Console.WriteLine("Cart cleared");
+            }
+            else
+            {
+                Console.WriteLine("Cart is empty");
+                MessageBox.Show("Корзина пуста");
+            }
+        }
+
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            Console.WriteLine("MenuItem clicked (Add to cart)");
+
+            if (ProductListView.SelectedIndex >= 0)
+            {
+                var Prod = ProductListView.SelectedItem as Product;
+                Console.WriteLine($"Adding product: {Prod?.ProductName}");
+                selectedProducts.Add(Prod);
+
+                var newOrderProd = new OrderProduct
+                {
+                    OrderID = selectedOrderProducts.Count() + 1,
+                    ProductArticleNumber = Prod.ProductArticleNumber,
+                    ProductQuantity = 1
+                };
+
+                var selOP = selectedOrderProducts.Where(p => Equals(p.ProductArticleNumber, Prod.ProductArticleNumber));
+
+                if (selOP.Count() == 0)
+                {
+                    selectedOrderProducts.Add(newOrderProd);
+                    Console.WriteLine("New product added to order");
+                }
+                else
+                {
+                    foreach (OrderProduct p in selectedOrderProducts)
+                    {
+                        if (p.ProductArticleNumber == Prod.ProductArticleNumber)
+                            p.ProductQuantity++;
+                    }
+                    Console.WriteLine("Product quantity increased");
+                }
+
+                // Показываем кнопку OrdersBtn при добавлении товара
+                Console.WriteLine($"selectedProducts.Count now = {selectedProducts.Count}");
+                OrdersBtn.Visibility = Visibility.Visible;
+                Console.WriteLine("Button set to Visible");
+                ProductListView.SelectedIndex = -1;
+            }
+            else
+            {
+                Console.WriteLine("No product selected");
+            }
+        }
+
     }
 }
